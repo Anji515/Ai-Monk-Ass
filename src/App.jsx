@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import "react-json-pretty/themes/monikai.css";
+import TageView from "./Components/TageView";
 
 const App = () => {
   const [tree, setTree] = useState({
@@ -47,6 +48,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <TageView />
       <button className="export-button" onClick={handleExport}>
         Export
       </button>
