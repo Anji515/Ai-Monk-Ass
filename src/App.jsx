@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import "react-json-pretty/themes/monikai.css";
-import TageView from "./Components/TageView";
+import {TagView} from "./Components/TageView";
 
 const App = () => {
   const [tree, setTree] = useState({
@@ -46,9 +46,90 @@ const App = () => {
     return strippedTag;
   };
 
+  const handleAddChild = (parentTag) => {
+    const newChild = { name: "New Child", data: "Data" };
+
+    const traverseAndAddChild = (currentTag) => {
+      if (currentTag.name === parentTag.name) {
+        if (!currentTag.children) {
+          currentTag.children = [];
+        }
+        currentTag.children.push(newChild);
+      } else if (currentTag.children) {
+        currentTag.children = currentTag.children.map(traverseAndAddChild);
+      }
+      return currentTag;
+    };
+
+    setTree(traverseAndAddChild({ ...tree }));
+  };
+
+  const handleToggleCollapse = (tagToToggle) => {
+    const traverseAndToggleCollapse = (currentTag) => {
+      if (currentTag === tagToToggle) {
+        return { ...currentTag, collapsed: !currentTag.collapsed };
+      }
+
+      if (currentTag.children) {
+        return {
+          ...currentTag,
+          children: currentTag.children.map(traverseAndToggleCollapse),
+        };
+      }
+
+      return currentTag;
+    };
+
+    setTree(traverseAndToggleCollapse(tree));
+  };
+
+  const handleUpdateName = (tagToUpdate, newName) => {
+    const traverseAndUpdateName = (currentTag) => {
+      if (currentTag === tagToUpdate) {
+        return { ...currentTag, name: newName };
+      }
+
+      if (currentTag.children) {
+        return {
+          ...currentTag,
+          children: currentTag.children.map(traverseAndUpdateName),
+        };
+      }
+
+      return currentTag;
+    };
+
+    setTree(traverseAndUpdateName(tree));
+  };
+
+  const handleUpdateData = (tagToUpdate, newData) => {
+    const traverseAndUpdateData = (currentTag) => {
+      if (currentTag === tagToUpdate) {
+        return { ...currentTag, data: newData };
+      }
+
+      if (currentTag.children) {
+        return {
+          ...currentTag,
+          children: currentTag.children.map(traverseAndUpdateData),
+        };
+      }
+
+      return currentTag;
+    };
+
+    setTree(traverseAndUpdateData(tree));
+  };
+
   return (
     <div className="App">
-      <TageView />
+      <TagView 
+      tag={tree}
+      onAddChild={handleAddChild}
+      onToggleCollapse={handleToggleCollapse}
+      onUpdateName={handleUpdateName}
+      onUpdateData={handleUpdateData}
+      />
       <button className="export-button" onClick={handleExport}>
         Export
       </button>
