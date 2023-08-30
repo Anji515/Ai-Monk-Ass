@@ -5,23 +5,55 @@ import {TagView} from "./Components/TageView";
 
 const App = () => {
   const [tree, setTree] = useState({
-    name: "root",
-    children: [
+    "name": "Products",
+    "children": [
       {
-        name: "child1",
-        children: [
-          { name: "child1-child1", data: "c1-c1 Hello" },
-          { name: "child1-child2", data: "c1-c2 JS" },
-        ],
+        "name": "Electronics",
+        "children": [
+          {
+            "name": "Mobile Phones",
+            "children": [
+              {
+                "name": "iPhone",
+                "data": "iPhone 14X model"
+              }
+            ]
+          },
+          {
+            "name": "Laptops",
+            "children": [
+              {
+                "name": "Apple MacBook",
+                "data": "High-performance laptops"
+              }
+            ]
+          }
+        ]
       },
       {
-        name: "child2",
-        children: [
-          { name: "child2-child1", data: "c2-c1 Hello" },
-          { name: "child2-child2", data: "c2-c2 JS" },
-        ],
-      },
-    ],
+        "name": "Clothing",
+        "children": [
+          {
+            "name": "Men's Clothing",
+            "children": [
+              {
+                "name": "T-shirts",
+                "data": "Various styles and sizes"
+              }
+            ]
+          },
+          {
+            "name": "Women's Clothing",
+            "children": [
+              {
+                "name": "Dresses",
+                "data": "Casual and formal dresses"
+              }
+            ]
+          }
+        ]
+      }
+    ]  
   });
 
   const [exportedJSON, setExportedJSON] = useState(null);
@@ -121,21 +153,40 @@ const App = () => {
     setTree(traverseAndUpdateData(tree));
   };
 
+  const copyToClipboard = () => {
+    const textarea = document.createElement("textarea");
+    textarea.value = exportedJSON;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+    alert("Data copied to clipboard!");
+  };
+
   return (
     <div className="App">
+      <div >
       <TagView 
+      className="container"
       tag={tree}
       onAddChild={handleAddChild}
       onToggleCollapse={handleToggleCollapse}
       onUpdateName={handleUpdateName}
       onUpdateData={handleUpdateData}
       />
+      </div>
       <button className="export-button" onClick={handleExport}>
         Export
       </button>
+        {JSON.parse(exportedJSON)?.children.length>0  && <button className="copy-button" onClick={copyToClipboard}>
+            Copy
+        </button>}
       <div className="exported-json">
+        <h3>Products Data</h3>
         <pre>{exportedJSON}</pre>
       </div>
+      <br />
+      <br />
     </div>
   );
 };
