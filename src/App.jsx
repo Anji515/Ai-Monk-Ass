@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import "react-json-pretty/themes/monikai.css";
 import {TagView} from "./Components/TageView";
+import ReactJson from "react-json-pretty";
 
 const App = () => {
   const [tree, setTree] = useState({
@@ -60,7 +61,7 @@ const App = () => {
 
   const handleExport = () => {
     const exportedTree = stripInternalProperties(tree);
-    const formattedJSON = JSON.stringify(exportedTree, null, 4);
+    const formattedJSON = JSON.stringify(exportedTree, null, 2);
     setExportedJSON(formattedJSON);
   };
   const stripInternalProperties = (tag) => {
@@ -183,7 +184,9 @@ const App = () => {
         </button>}
       <div className="exported-json">
         <h3>Products Data</h3>
-        <pre>{exportedJSON}</pre>
+       <ReactJson
+          data={JSON.parse(exportedJSON)}
+          theme="monikai" />
       </div>
       <br />
       <br />
