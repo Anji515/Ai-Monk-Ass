@@ -61,7 +61,7 @@ const App = () => {
 
   const handleExport = () => {
     const exportedTree = stripInternalProperties(tree);
-    const formattedJSON = JSON.stringify(exportedTree, null, 2);
+    const formattedJSON = JSON.stringify(exportedTree, null, 4);
     setExportedJSON(formattedJSON);
   };
   const stripInternalProperties = (tag) => {
@@ -80,22 +80,41 @@ const App = () => {
   };
 
   const handleAddChild = (parentTag) => {
-    const newChild = { name: "New Child", data: "Data" };
-
+    const newChild = parentTag.name === "root" || parentTag.name === "Products"
+    ? { name: "New Child" }
+    : { name: "New Child", data: "Data" };
+  
     const traverseAndAddChild = (currentTag) => {
-      if (currentTag.name === parentTag.name) {
+      if (currentTag === parentTag) {
         if (!currentTag.children) {
           currentTag.children = [];
         }
         currentTag.children.push(newChild);
-      } else if (currentTag.children) {
-        currentTag.children = currentTag.children.map(traverseAndAddChild);
+        return currentTag;
       }
+  
+      if (currentTag.children) {
+        return {
+          ...currentTag,
+          children: currentTag.children.map(traverseAndAddChild),
+        };
+      }
+  
       return currentTag;
     };
-
-    setTree(traverseAndAddChild({ ...tree }));
+  
+    if (parentTag.name === "Products") {
+      setTree({
+        ...tree,
+        children: [...tree.children, newChild],
+      });
+    } else {
+      setTree(traverseAndAddChild({ ...tree }));
+    }
   };
+   
+  
+
 
   const handleToggleCollapse = (tagToToggle) => {
     const traverseAndToggleCollapse = (currentTag) => {
@@ -121,19 +140,20 @@ const App = () => {
       if (currentTag === tagToUpdate) {
         return { ...currentTag, name: newName };
       }
-
+  
       if (currentTag.children) {
-        return {
-          ...currentTag,
-          children: currentTag.children.map(traverseAndUpdateName),
-        };
+        const updatedChildren = currentTag.children.map(traverseAndUpdateName);
+        return { ...currentTag, children: updatedChildren };
       }
-
+  
       return currentTag;
     };
-
-    setTree(traverseAndUpdateName(tree));
+  
+    const updatedTree = traverseAndUpdateName({ ...tree });
+    setTree(updatedTree);
   };
+  
+  
 
   const handleUpdateData = (tagToUpdate, newData) => {
     const traverseAndUpdateData = (currentTag) => {
@@ -182,12 +202,12 @@ const App = () => {
         {JSON.parse(exportedJSON)?.children.length>0  && <button className="copy-button" onClick={copyToClipboard}>
             Copy
         </button>}
-      <div className="exported-json">
+      {JSON.parse(exportedJSON)?.children.length>0  && <div className="exported-json">
         <h3>Products Data</h3>
-       <ReactJson
+       <h4><ReactJson
           data={JSON.parse(exportedJSON)}
-          theme="monikai" />
-      </div>
+          theme="monikai" /></h4>
+      </div>}
       <br />
       <br />
     </div>

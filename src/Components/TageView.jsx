@@ -51,7 +51,7 @@ export const TagView = ({ tag, onAddChild, onToggleCollapse, onUpdateName, onUpd
             {tag.name}
           </div>
         )}
-        {!isCollapsed && tag.name !== "root" && ( // Add condition to exclude input for root
+        {!isCollapsed && tag.name !== "root" && (
           <button className="add-child-button" onClick={handleAddChild}>
             Add Child
           </button>
