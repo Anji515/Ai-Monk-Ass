@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Styles/styles.css";
 import "./App.css";
 import "react-json-pretty/themes/monikai.css";
 import {TagView} from "./Components/TageView";
@@ -186,6 +187,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <h2 className="header">A Visual Tree Hierarchy Builder</h2>
       <div >
       <TagView 
       className="container"
